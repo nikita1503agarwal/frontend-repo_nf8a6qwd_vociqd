@@ -4,6 +4,7 @@ import HorizontalShowcase from './components/HorizontalShowcase'
 import VerticalSections from './components/VerticalSections'
 import Footer from './components/Footer'
 import Lenis from '@studio-freight/lenis'
+import MagneticCursor from './components/MagneticCursor'
 
 function App() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <div className="bg-black text-white min-h-screen">
+      <MagneticCursor />
       <Hero />
       <HorizontalShowcase />
       <VerticalSections />

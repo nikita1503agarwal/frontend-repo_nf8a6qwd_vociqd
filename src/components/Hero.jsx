@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useCallback } from 'react'
-import Spline from '@splinetool/react-spline'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AnimatedText from './AnimatedText'
@@ -17,7 +16,6 @@ export default function Hero() {
   const onScrollCue = useCallback(() => {
     const next = document.querySelector('#works')
     if (!next) return
-    // Smooth scroll to next section (Lenis will hijack if present)
     next.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
@@ -26,7 +24,7 @@ export default function Hero() {
 
     const ctx = gsap.context(() => {
       if (subtitleRef.current && !reduce) {
-        gsap.from(subtitleRef.current, { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.15 })
+        gsap.from(subtitleRef.current, { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 })
       }
 
       if (!reduce) {
@@ -41,9 +39,9 @@ export default function Hero() {
           stagger: 0.3,
         })
 
-        // Fade overlay slightly on scroll to transition to next sections
+        // Slight fade to hint transition to next sections
         gsap.to('#hero', {
-          opacity: 0.92,
+          opacity: 0.96,
           scrollTrigger: {
             trigger: '#hero',
             start: 'top top',
@@ -59,32 +57,42 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative h-[100dvh] w-full bg-black text-white overflow-hidden">
-      {/* 3D Spline scene */}
+      {/* Cinematic background video: replace sources with your reels */}
       <div className="absolute inset-0">
-        <Spline scene="https://prod.spline.design/Ujidb4bmigoHT4IV/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=1920&auto=format&fit=crop"
+        >
+          <source src="https://cdn.coverr.co/videos/coverr-city-drive-6310/1080p.mp4" type="video/mp4" />
+          <source src="https://cdn.coverr.co/videos/coverr-silhouette-of-man-looking-at-sunrise-6521/1080p.mp4" type="video/mp4" />
+        </video>
       </div>
 
-      {/* Gradient vignette overlay for depth (non-blocking) */}
+      {/* Vignette + color grading overlays */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,0,0,0.12),transparent_50%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_0%,rgba(0,0,0,0.35)_60%,rgba(0,0,0,0.85)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.15)_0%,rgba(0,0,0,0.35)_60%,rgba(0,0,0,0.85)_100%)]" />
 
-      {/* Content */}
+      {/* Copy */}
       <div className="relative z-10 h-full w-full flex items-center">
         <div className="container mx-auto px-6 md:px-10">
           <AnimatedText
             as="h1"
-            text="We craft cinematic digital experiences."
+            text="Cinematic photography. Built for the web."
             split="letters"
             className="leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold"
             style={{ fontFamily: "'Courier Prime', Courier, monospace" }}
           />
-          <p ref={subtitleRef} className="mt-6 max-w-2xl text-base md:text-lg text-white/80">
-            Production agency for ambitious brands. Film-grade craft, real-time 3D, and interactive stories.
+          <p ref={subtitleRef} className="mt-6 max-w-2xl text-base md:text-lg text-white/85">
+            High-end imagery and interactive craft. We direct, shoot, and design digital experiences with filmic motion.
           </p>
         </div>
       </div>
 
-      {/* Floating accent shapes for subtle parallax/floating */}
+      {/* Floating accent shapes for depth */}
       <div ref={overlayRef} className="absolute inset-0 z-10 pointer-events-none">
         <div className="floaty absolute top-[20%] left-[8%] w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500/80 shadow-[0_0_30px_6px_rgba(239,68,68,0.35)]" />
         <div className="floaty absolute bottom-[18%] right-[12%] w-24 h-24 border border-white/10 rounded-full" />

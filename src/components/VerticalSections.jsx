@@ -27,15 +27,26 @@ export default function VerticalSections() {
           }
         })
       })
+
+      // subtle parallax background texture
+      const bg = ref.current?.querySelector('.bg-texture')
+      if (bg) {
+        gsap.to(bg, {
+          y: -80,
+          ease: 'none',
+          scrollTrigger: { trigger: ref.current, start: 'top bottom', end: 'bottom top', scrub: true }
+        })
+      }
     })
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={ref} className="bg-black text-white py-24 md:py-40">
-      <div className="container mx-auto px-6 md:px-10 max-w-6xl">
-        <AnimatedText as="h2" text="We design for attention and memory." split="words" triggerOnScroll className="text-3xl md:text-5xl font-black tracking-tight" />
+    <section ref={ref} className="relative bg-black text-white py-24 md:py-40 overflow-hidden">
+      <div className="bg-texture pointer-events-none absolute inset-0 opacity-10" style={{ background: 'radial-gradient(1000px 600px at 20% 30%, rgba(255,0,0,0.35), transparent 60%)' }} />
+      <div className="container mx-auto px-6 md:px-10 max-w-6xl relative z-10">
+        <AnimatedText as="h2" text="About the studio" split="words" triggerOnScroll className="text-3xl md:text-5xl font-black tracking-tight" />
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 mt-12 md:mt-20">
           <div data-reveal>
             <p className="text-white/80 leading-relaxed">From the first frame to the last interaction, we craft rhythm. Our team blends film craft, brand systems, and interactive design to create products and stories that resonate.</p>
@@ -46,7 +57,7 @@ export default function VerticalSections() {
         </div>
 
         <div className="mt-16 md:mt-24 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {["Strategy","Direction","CGI","Interactive"].map((label,i)=> (
+          {["Direction","CGI","Photography","Interactive"].map((label,i)=> (
             <div key={i} data-reveal className="bg-neutral-900/60 border border-white/10 rounded-xl p-6">
               <h3 className="text-lg font-semibold">{label}</h3>
               <p className="text-sm text-white/60 mt-2">Replace with your offering bullets, services, or capabilities.</p>
