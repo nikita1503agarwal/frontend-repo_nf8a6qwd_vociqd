@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import AnimatedText from './AnimatedText'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
@@ -8,9 +9,13 @@ export default function VerticalSections() {
   const ref = useRef(null)
 
   useEffect(() => {
+    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const ctx = gsap.context(() => {
+      if (reduce) return
+
       const blocks = ref.current?.querySelectorAll('[data-reveal]') || []
-      blocks.forEach((el, i) => {
+      blocks.forEach((el) => {
         gsap.from(el, {
           y: 40,
           opacity: 0,
@@ -22,24 +27,6 @@ export default function VerticalSections() {
           }
         })
       })
-
-      const lines = ref.current?.querySelectorAll('.reveal-line') || []
-      lines.forEach((line) => {
-        const words = line.textContent.split(' ')
-        line.innerHTML = words.map(w => `<span class='inline-block overflow-hidden mr-2 align-top'><span class='inner inline-block translate-y-full opacity-0'>${w}</span></span>`).join(' ')
-        const inners = line.querySelectorAll('.inner')
-        gsap.to(inners, {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          stagger: 0.05,
-          scrollTrigger: {
-            trigger: line,
-            start: 'top 85%'
-          }
-        })
-      })
     })
 
     return () => ctx.revert()
@@ -48,7 +35,7 @@ export default function VerticalSections() {
   return (
     <section ref={ref} className="bg-black text-white py-24 md:py-40">
       <div className="container mx-auto px-6 md:px-10 max-w-6xl">
-        <h2 className="reveal-line text-3xl md:text-5xl font-black tracking-tight">We design for attention and memory.</h2>
+        <AnimatedText as="h2" text="We design for attention and memory." split="words" triggerOnScroll className="text-3xl md:text-5xl font-black tracking-tight" />
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 mt-12 md:mt-20">
           <div data-reveal>
             <p className="text-white/80 leading-relaxed">From the first frame to the last interaction, we craft rhythm. Our team blends film craft, brand systems, and interactive design to create products and stories that resonate.</p>

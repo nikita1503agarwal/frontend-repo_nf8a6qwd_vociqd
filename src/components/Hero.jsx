@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import Spline from '@splinetool/react-spline'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import AnimatedText from './AnimatedText'
+import ScrollHandCue from './ScrollHandCue'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined' && gsap.core?.globals()?.ScrollTrigger !== ScrollTrigger) {
@@ -9,50 +11,51 @@ if (typeof window !== 'undefined' && gsap.core?.globals()?.ScrollTrigger !== Scr
 }
 
 export default function Hero() {
-  const titleRef = useRef(null)
   const subtitleRef = useRef(null)
   const overlayRef = useRef(null)
 
+  const onScrollCue = useCallback(() => {
+    const next = document.querySelector('#works')
+    if (!next) return
+    // Smooth scroll to next section (Lenis will hijack if present)
+    next.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+
   useEffect(() => {
-    // Text reveal animations
+    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      tl.from(titleRef.current?.querySelectorAll('.reveal-word'), {
-        yPercent: 100,
-        opacity: 0,
-        duration: 1.1,
-        stagger: 0.07,
-      })
-      tl.from(subtitleRef.current, { y: 20, opacity: 0, duration: 0.9 }, '-=0.4')
+      if (subtitleRef.current && !reduce) {
+        gsap.from(subtitleRef.current, { y: 20, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.15 })
+      }
 
-      // Subtle floating parallax for overlay chips
-      gsap.to(overlayRef.current?.querySelectorAll('.floaty'), {
-        y: 30,
-        x: 15,
-        duration: 6,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: 0.3,
-      })
+      if (!reduce) {
+        // Subtle floating parallax for overlay chips
+        gsap.to(overlayRef.current?.querySelectorAll('.floaty'), {
+          y: 30,
+          x: 15,
+          duration: 6,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          stagger: 0.3,
+        })
 
-      // Fade overlay out slightly on scroll to transition to next sections
-      gsap.to('#hero', {
-        opacity: 0.92,
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
+        // Fade overlay slightly on scroll to transition to next sections
+        gsap.to('#hero', {
+          opacity: 0.92,
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
     })
 
     return () => ctx.revert()
   }, [])
-
-  const title = 'We craft cinematic digital experiences.'
-  const words = title.split(' ')
 
   return (
     <section id="hero" className="relative h-[100dvh] w-full bg-black text-white overflow-hidden">
@@ -68,13 +71,13 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 h-full w-full flex items-center">
         <div className="container mx-auto px-6 md:px-10">
-          <h1 ref={titleRef} style={{ fontFamily: "'Courier Prime', Courier, monospace" }} className="text-white leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold">
-            {words.map((w, i) => (
-              <span key={i} className="inline-block overflow-hidden mr-2 align-top">
-                <span className="reveal-word inline-block will-change-transform">{w}</span>
-              </span>
-            ))}
-          </h1>
+          <AnimatedText
+            as="h1"
+            text="We craft cinematic digital experiences."
+            split="letters"
+            className="leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold"
+            style={{ fontFamily: "'Courier Prime', Courier, monospace" }}
+          />
           <p ref={subtitleRef} className="mt-6 max-w-2xl text-base md:text-lg text-white/80">
             Production agency for ambitious brands. Film-grade craft, real-time 3D, and interactive stories.
           </p>
@@ -87,6 +90,9 @@ export default function Hero() {
         <div className="floaty absolute bottom-[18%] right-[12%] w-24 h-24 border border-white/10 rounded-full" />
         <div className="floaty absolute top-[35%] right-[30%] w-16 h-10 rotate-12 border-t border-red-500/40" />
       </div>
+
+      {/* Palm-hand scroll cue */}
+      <ScrollHandCue onClick={onScrollCue} className="text-white" color="#ffffff" />
     </section>
   )
 }
