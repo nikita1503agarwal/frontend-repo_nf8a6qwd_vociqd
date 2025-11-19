@@ -15,32 +15,23 @@
   html {
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
+    background: #000;
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-black text-white;
   }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
-@layer utilities {
-  .animate-in {
-    animation-name: animateIn;
-    animation-duration: 350ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
-  }
+/* Smooth scrolling container for Lenis */
+html.lenis, html.lenis body { height: auto }
+.lenis.lenis-smooth { scroll-behavior: auto !important }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain }
+.lenis.lenis-stopped { overflow: hidden }
+.lenis.lenis-smooth iframe { pointer-events: none }
 
-  .animate-out {
-    animation-name: animateOut;
-    animation-duration: 350ms;
-    --tw-exit-opacity: initial;
-    --tw-exit-scale: initial;
-    --tw-exit-rotate: initial;
-    --tw-exit-translate-x: initial;
-    --tw-exit-translate-y: initial;
-  }
+/* Utility animations */
+@layer utilities {
+  .animate-in { animation-name: animateIn; animation-duration: 350ms; }
+  .animate-out { animation-name: animateOut; animation-duration: 350ms; }
 }
